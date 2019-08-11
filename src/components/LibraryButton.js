@@ -4,8 +4,8 @@ import styled from 'styled-components'
 
 const Button = styled.button`
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 20px;
+  left: 20px;
   z-index: 2;
   background: transparent;
   border: none;
@@ -25,7 +25,7 @@ const Burger = styled.div`
     display: block;
     height: 2px;
     width: 100%;
-    background-color: white;
+    background-color: #CCCBCB;
     margin-bottom: 6px;
     transition: 300ms all ease;
 
