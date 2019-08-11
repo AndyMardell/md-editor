@@ -62,18 +62,27 @@ const Library = () => {
     }, true)
   }
 
+  const handleEnter = ({ e, item }) => {
+    if (e.which !== 13) return
+
+    e.preventDefault()
+    handleRename({ e, item })
+  }
+
   return (
     <>
       <LibraryButton active={active} setActive={setActive} />
       <Nav style={animationProps}>
         <button onClick={handleAdd}>+ New</button>
         {documents.map((item, i) => (
-          <button
-            key={i}
-            contentEditable={item.editable}
-            onBlur={e => item.editable ? handleRename({ e, item }) : null}
-          >
-            {item.name}
+          <button key={i}>
+            <span
+              contentEditable={item.editable}
+              onKeyUp={e => handleEnter({ e, item })}
+              onBlur={e => item.editable ? handleRename({ e, item }) : null}
+            >
+              {item.name}
+            </span>
           </button>
         ))}
       </Nav>

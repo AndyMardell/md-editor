@@ -1,12 +1,13 @@
 html, body {
   background: #191A1A;
   color: #CCCBCB;
-  font-size: 19px;
+  font-size: 20px;
   font-family: 'IBM Plex Mono', monospace;
   tab-size: 1.2em;
   line-height: 1.85;
-  letter-spacing: 1px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
@@ -22,6 +23,8 @@ h1 {
 .tag {
   background-color: #0C0C0D;
   border: 1px solid #2F2E2E;
+  color: #8C8C8C;
+  letter-spacing: normal;
   border-radius: 100px;
   font-size: 0.9em;
   padding: 0 10px 0 15px;

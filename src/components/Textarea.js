@@ -15,11 +15,18 @@ const StyledTextarea = styled.div`
   }
 `
 
-const Textarea = () => (
-  <StyledTextarea
-    id='mainContent'
-    contentEditable
-  ></StyledTextarea>
-)
+const Textarea = () => {
+  const handleSave = (e) => {
+    if (e.which === 83 && e.metaKey) e.preventDefault()
+  }
+
+  return (
+    <StyledTextarea
+      id='mainContent'
+      contentEditable
+      onKeyDown={e => handleSave(e)}
+    ></StyledTextarea>
+  )
+}
 
 export default Textarea

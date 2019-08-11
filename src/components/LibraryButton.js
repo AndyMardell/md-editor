@@ -15,41 +15,61 @@ const Button = styled.button`
   align-items: center;
   height: 34px;
   cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  letter-spacing: 1px;
+
+  ${({ active }) => !active && `
+    &:hover span:nth-child(3) {
+      transform: rotate(0);
+    }
+  `}
 `
 
 const Burger = styled.div`
+  height: 25px;
   width: 25px;
   margin-right: 10px;
 
   & > span {
-    display: block;
-    height: 2px;
-    width: 100%;
+    display: inline-block;
+    width: 3px;
+    height: 100%;
     background-color: #CCCBCB;
-    margin-bottom: 6px;
+    margin-right: 6px;
     transition: 300ms all ease;
 
+    &:nth-child(1) {
+      height: 90%
+    }
+    &:nth-child(3) {
+      height: 80%
+      transform: rotate(-10deg);
+    }
+
     ${({ active }) => active && `
-      margin-bottom: -2px;
+      margin-right: -2px;
       &:nth-child(1) {
+        height: 100%;
         transform: rotate(45deg);
       }
       &:nth-child(2) {
         display: none;
       }
       &:nth-child(3) {
+        height: 100%;
         transform: rotate(-45deg);
       }
     `}
 
     &:last-child {
-      margin-bottom: 0;
+      margin-right: 0;
     }
   }
 `
 
 const LibraryButton = ({ active, setActive }) => (
-  <Button onClick={() => setActive(!active)}>
+  <Button active={active} onClick={() => setActive(!active)}>
     <Burger active={active}>
       <span />
       <span />
