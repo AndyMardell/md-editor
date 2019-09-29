@@ -3,14 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.1",
+    "apollo-boost": "^0.4.4",
+    "graphql": "^14.5.8",
     "lodash": "4.17.15",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
     "react-spring": "^8.0.27",
-    "styled-components": "^4.3.2"
+    "rehype-document": "^3.0.1",
+    "rehype-format": "^2.3.2",
+    "rehype-stringify": "^6.0.0",
+    "remark-html": "^10.0.0",
+    "remark-parse": "^7.0.1",
+    "remark-rehype": "^5.0.0",
+    "styled-components": "^4.3.2",
+    "unified": "^8.3.2"
   },
   "devDependencies": {
+    "dotenv": "^8.1.0",
     "eslint": "^5.0.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.18.0",

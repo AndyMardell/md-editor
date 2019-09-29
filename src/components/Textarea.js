@@ -1,5 +1,8 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import debounce from 'lodash/debounce'
+import useContent from '../hooks/useContent'
+import PropTypes from 'prop-types'
 
 const StyledTextarea = styled.div`
   font-size: 1em;
@@ -15,18 +18,32 @@ const StyledTextarea = styled.div`
   }
 `
 
-const Textarea = () => {
-  const handleSave = (e) => {
-    if (e.which === 83 && e.metaKey) e.preventDefault()
-  }
+const Textarea = ({ slug }) => {
+  const { loading, file, saveContent } = useContent({ slug })
+  const textareaRef = useRef()
+
+  useEffect(() => {
+    if (!loading && file) {
+      textareaRef.current.innerHTML = file.file.contents
+    }
+  }, [loading, file])
+
+  const debouncedSave = debounce(() => {
+    saveContent({ slug, contents: textareaRef.current.innerHTML })
+  }, 700)
 
   return (
     <StyledTextarea
       id='mainContent'
+      ref={textareaRef}
       contentEditable
-      onKeyDown={e => handleSave(e)}
-    ></StyledTextarea>
+      onKeyDown={debouncedSave}
+    />
   )
+}
+
+Textarea.propTypes = {
+  slug: PropTypes.string
 }
 
 export default Textarea

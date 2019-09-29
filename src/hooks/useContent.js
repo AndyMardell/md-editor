@@ -1,16 +1,53 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
 
-const useContent = () => {
-  const [content, setContentState] = useState(null)
+const FILE = gql`
+  query getFile($slug: String!) {
+    file(slug: $slug) {
+      slug
+      name
+      contents
+    }
+  }
+`
 
-  const setContent = inputContent => {
-    if (!inputContent) return
-    const outputContent = inputContent.replace(new RegExp('(# )'), '<h1>$1</h1>')
-    setContentState(outputContent)
-    return outputContent
+const UPDATE_FILE = gql`
+  mutation update(
+    $slug: String!
+    $name: String
+    $contents: String
+  ) {
+    update(
+      slug: $slug
+      name: $name
+      contents: $contents
+    ) {
+      slug
+      name
+      contents
+    }
+  }
+`
+
+const useContent = ({ slug }) => {
+  const [updateFile] = useMutation(UPDATE_FILE)
+  const { loading, data } = useQuery(FILE, {
+    variables: { slug }
+  })
+  const [file, setContentState] = useState()
+
+  useEffect(() => {
+    if (!loading) {
+      setContentState(data)
+    }
+  }, [loading, data])
+
+  const saveContent = ({ slug, contents }) => {
+    updateFile({ variables: { slug, contents } })
   }
 
-  return { content, setContent }
+  return { loading, file, saveContent }
 }
 
 export default useContent
