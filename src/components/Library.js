@@ -3,6 +3,8 @@ import LibraryButton from './LibraryButton'
 import styled from 'styled-components'
 import { animated, useSpring, config } from 'react-spring'
 import useDocuments from '../hooks/useDocuments'
+import slugify from 'slugify'
+import { Link } from 'react-router-dom'
 
 const Nav = styled(animated.nav)`
   position: fixed;
@@ -16,9 +18,12 @@ const Nav = styled(animated.nav)`
   width: 100%;
   max-width: 350px;
 
-  & > button {
+  & > a, & > button {
     display: block;
+    box-sizing: border-box;
     width: 100%;
+    color: inherit;
+    text-decoration: none;
     text-align: left;
     background: transparent;
     border: none;
@@ -39,7 +44,7 @@ const Nav = styled(animated.nav)`
 
 const Library = () => {
   const [active, setActive] = useState(false)
-  const { documents, addDocument } = useDocuments()
+  const { loading, documents, addDocument } = useDocuments()
 
   const animationProps = useSpring({
     config: config.default,
@@ -50,6 +55,7 @@ const Library = () => {
   const handleAdd = () => {
     addDocument({
       name: 'New Document',
+      slug: slugify('New Document'),
       editable: true
     })
   }
@@ -58,6 +64,7 @@ const Library = () => {
     addDocument({
       name: item.name,
       newName: e.target.innerText,
+      slug: slugify(e.target.innerText),
       editable: false
     }, true)
   }
@@ -69,13 +76,15 @@ const Library = () => {
     handleRename({ e, item })
   }
 
+  if (loading) return 'Loading...'
+
   return (
     <>
       <LibraryButton active={active} setActive={setActive} />
       <Nav style={animationProps}>
         <button onClick={handleAdd}>+ New</button>
         {documents.map((item, i) => (
-          <button key={i}>
+          <Link key={i} to={item.slug}>
             <span
               contentEditable={item.editable}
               onKeyUp={e => handleEnter({ e, item })}
@@ -83,7 +92,7 @@ const Library = () => {
             >
               {item.name}
             </span>
-          </button>
+          </Link>
         ))}
       </Nav>
     </>

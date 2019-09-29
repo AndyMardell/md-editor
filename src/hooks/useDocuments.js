@@ -1,30 +1,34 @@
 import { useState, useEffect } from 'react'
+import { useQuery } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
 
-// NOTE: Temp array representing a datastore
-const existingDocuments = [
-  { name: 'List' },
-  { name: 'To-dos' },
-  { name: 'Shopping' },
-  { name: 'Wedding list' }
-]
+const FILES = gql`
+  query getFiles {
+    files {
+      slug
+      name
+    }
+  }
+`
 
 const useDocument = () => {
   let [documents, savedDocuments] = useState([])
+  const { loading, data } = useQuery(FILES)
 
   useEffect(() => {
-    savedDocuments(existingDocuments)
-  }, [])
+    if (!loading) {
+      savedDocuments(data.files)
+    }
+  }, [loading, data])
 
   const addDocument = (documentDetails, overwrite) => {
     if (!documentDetails.name) return { saved: false }
-
     if (overwrite) {
       documents = documents.filter(document =>
         document.name !== documentDetails.name)
       documentDetails.name = documentDetails.newName
       delete documentDetails.newName
     }
-
     savedDocuments([
       {
         name: documentDetails.name,
@@ -32,11 +36,10 @@ const useDocument = () => {
       },
       ...documents
     ])
-
     return { ...documentDetails, saved: true }
   }
 
-  return { documents, addDocument }
+  return { loading, documents, addDocument }
 }
 
 export default useDocument

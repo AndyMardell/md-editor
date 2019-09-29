@@ -18,7 +18,8 @@ const StyledTextarea = styled.div`
   }
 `
 
-const Textarea = ({ slug }) => {
+const Textarea = ({ match }) => {
+  const slug = match.params.slug
   const { loading, file, saveContent } = useContent({ slug })
   const textareaRef = useRef()
 
@@ -43,7 +44,7 @@ const Textarea = ({ slug }) => {
 }
 
 Textarea.propTypes = {
-  slug: PropTypes.string
+  match: PropTypes.object
 }
 
 export default Textarea
