@@ -31,23 +31,28 @@ const UPDATE_FILE = gql`
 `
 
 const useContent = ({ slug }) => {
+  const [contentState, setContentState] = useState()
   const [updateFile] = useMutation(UPDATE_FILE)
-  const { loading, data } = useQuery(FILE, {
-    variables: { slug }
-  })
-  const [file, setContentState] = useState()
+  const { loading, data } = useQuery(FILE, { variables: { slug } })
 
-  useEffect(() => {
-    if (!loading) {
-      setContentState(data)
-    }
-  }, [loading, data])
+  useEffect(() => updateContent(), [slug])
 
-  const saveContent = ({ slug, contents }) => {
-    updateFile({ variables: { slug, contents } })
+  const updateContent = () => {
+    if (loading || !data) return
+    setContentState({ slug, contents: data.file.contents })
   }
 
-  return { loading, file, saveContent }
+  const saveContent = (saved) => {
+    setContentState({ slug: saved.slug, contents: saved.contents })
+    updateFile({
+      variables: {
+        slug: saved.slug,
+        contents: saved.contents
+      }
+    })
+  }
+
+  return { loading, contentState, saveContent }
 }
 
 export default useContent

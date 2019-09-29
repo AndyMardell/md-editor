@@ -13,7 +13,8 @@ const Nav = styled(animated.nav)`
   z-index: 1;
   background: #151414;
   border-right: 1px solid black;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: scroll;
   padding-top: 80px;
   width: 100%;
   max-width: 350px;
@@ -44,7 +45,8 @@ const Nav = styled(animated.nav)`
 
 const Library = () => {
   const [active, setActive] = useState(false)
-  const { loading, documents, addDocument } = useDocuments()
+  const { loading, documents, updateDocument } = useDocuments()
+  const [addingNewFile, setAddingNewFile] = useState(false)
 
   const animationProps = useSpring({
     config: config.default,
@@ -52,46 +54,36 @@ const Library = () => {
     to: { left: active ? '0' : '-350px' }
   })
 
-  const handleAdd = () => {
-    addDocument({
-      name: 'New Document',
-      slug: slugify('New Document'),
-      editable: true
-    })
-  }
-
-  const handleRename = ({ e, item }) => {
-    addDocument({
-      name: item.name,
-      newName: e.target.innerText,
-      slug: slugify(e.target.innerText),
-      editable: false
-    }, true)
-  }
-
-  const handleEnter = ({ e, item }) => {
+  const handleCreate = (e) => {
     if (e.which !== 13) return
-
     e.preventDefault()
-    handleRename({ e, item })
+    updateDocument({
+      name: e.target.innerText,
+      slug: slugify(e.target.innerText),
+      contents: ''
+    })
+    e.target.innerText = '+ New'
+    setAddingNewFile(false)
   }
 
-  if (loading) return 'Loading...'
+  if (loading) return null
 
   return (
     <>
       <LibraryButton active={active} setActive={setActive} />
       <Nav style={animationProps}>
-        <button onClick={handleAdd}>+ New</button>
+        <button>
+          <span
+            onClick={() => setAddingNewFile(true)}
+            contentEditable={addingNewFile}
+            onKeyUp={handleCreate}
+          >
+            + New
+          </span>
+        </button>
         {documents.map((item, i) => (
           <Link key={i} to={item.slug}>
-            <span
-              contentEditable={item.editable}
-              onKeyUp={e => handleEnter({ e, item })}
-              onBlur={e => item.editable ? handleRename({ e, item }) : null}
-            >
-              {item.name}
-            </span>
+            {item.name}
           </Link>
         ))}
       </Nav>

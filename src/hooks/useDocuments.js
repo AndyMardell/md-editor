@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 
 const FILES = gql`
@@ -11,35 +11,42 @@ const FILES = gql`
   }
 `
 
+const UPDATE_FILE = gql`
+  mutation update(
+    $slug: String!
+    $name: String
+    $contents: String
+  ) {
+    update(
+      slug: $slug
+      name: $name
+      contents: $contents
+    ) {
+      slug
+      name
+      contents
+    }
+  }
+`
+
 const useDocument = () => {
-  let [documents, savedDocuments] = useState([])
+  let [documents, setDocuments] = useState([])
+  const [updateFile] = useMutation(UPDATE_FILE)
   const { loading, data } = useQuery(FILES)
 
   useEffect(() => {
-    if (!loading) {
-      savedDocuments(data.files)
-    }
+    if (loading) return
+    setDocuments(data.files)
   }, [loading, data])
 
-  const addDocument = (documentDetails, overwrite) => {
-    if (!documentDetails.name) return { saved: false }
-    if (overwrite) {
-      documents = documents.filter(document =>
-        document.name !== documentDetails.name)
-      documentDetails.name = documentDetails.newName
-      delete documentDetails.newName
-    }
-    savedDocuments([
-      {
-        name: documentDetails.name,
-        editable: documentDetails.editable
-      },
-      ...documents
-    ])
-    return { ...documentDetails, saved: true }
+  const updateDocument = async (updatedData) => {
+    if (!updatedData.slug) return { saved: false }
+    const updatedDocument = updateFile({ variables: updatedData })
+    setDocuments([updatedData, ...documents])
+    return updatedDocument
   }
 
-  return { loading, documents, addDocument }
+  return { loading, documents, updateDocument }
 }
 
 export default useDocument

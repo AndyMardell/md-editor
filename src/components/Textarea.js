@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
 import useContent from '../hooks/useContent'
@@ -20,22 +20,28 @@ const StyledTextarea = styled.div`
 
 const Textarea = ({ match }) => {
   const slug = match.params.slug
-  const { loading, file, saveContent } = useContent({ slug })
+  const { loading, contentState, saveContent } = useContent({ slug })
+  const [needsUpdating, setNeedsUpdating] = useState(true)
   const textareaRef = useRef()
 
   useEffect(() => {
-    if (!loading && file) {
-      textareaRef.current.innerHTML = file.file.contents
+    if (loading || !contentState) return
+    if (contentState.slug !== slug) setNeedsUpdating(true)
+    if (needsUpdating) {
+      setNeedsUpdating(false)
+      textareaRef.current.innerHTML = contentState.contents
     }
-  }, [loading, file])
+  }, [contentState, slug, loading])
 
   const debouncedSave = debounce(() => {
+    console.log(textareaRef.current.innerHTML)
     saveContent({ slug, contents: textareaRef.current.innerHTML })
   }, 700)
 
+  if (!contentState) return null
+
   return (
     <StyledTextarea
-      id='mainContent'
       ref={textareaRef}
       contentEditable
       onKeyDown={debouncedSave}
