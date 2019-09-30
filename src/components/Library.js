@@ -12,7 +12,7 @@ const Nav = styled(animated.nav)`
   left: 0;
   z-index: 1;
   background: #151414;
-  border-right: 1px solid black;
+  border-right: 1px solid #111;
   height: 100vh;
   overflow: scroll;
   padding-top: 80px;

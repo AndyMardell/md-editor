@@ -75,7 +75,6 @@ const LibraryButton = ({ active, setActive }) => (
       <span />
       <span />
     </Burger>
-    <span>{active ? 'Close' : 'Library'}</span>
   </Button>
 )
 

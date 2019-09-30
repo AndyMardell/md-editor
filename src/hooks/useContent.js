@@ -34,7 +34,7 @@ const useContent = ({ slug }) => {
   const [updateFile] = useMutation(UPDATE_FILE)
   const { loading, data, refetch } = useQuery(FILE, { variables: { slug } })
 
-  useEffect(() => refetch, [slug])
+  useEffect(() => refetch, [slug, refetch])
 
   const saveContent = (saved) => {
     updateFile({
