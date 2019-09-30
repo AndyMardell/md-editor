@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
 import useContent from '../hooks/useContent'
@@ -21,24 +21,18 @@ const StyledTextarea = styled.div`
 const Textarea = ({ match }) => {
   const slug = match.params.slug
   const { loading, contentState, saveContent } = useContent({ slug })
-  const [needsUpdating, setNeedsUpdating] = useState(true)
   const textareaRef = useRef()
 
   useEffect(() => {
-    if (loading || !contentState) return
-    if (contentState.slug !== slug) setNeedsUpdating(true)
-    if (needsUpdating) {
-      setNeedsUpdating(false)
-      textareaRef.current.innerHTML = contentState.contents
-    }
-  }, [contentState, slug, loading])
+    if (loading) return
+    textareaRef.current.innerHTML = contentState.file.contents
+  }, [loading, contentState])
 
   const debouncedSave = debounce(() => {
-    console.log(textareaRef.current.innerHTML)
     saveContent({ slug, contents: textareaRef.current.innerHTML })
   }, 700)
 
-  if (!contentState) return null
+  if (loading || !contentState) return null
 
   return (
     <StyledTextarea

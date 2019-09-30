@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 
@@ -31,19 +31,12 @@ const UPDATE_FILE = gql`
 `
 
 const useContent = ({ slug }) => {
-  const [contentState, setContentState] = useState()
   const [updateFile] = useMutation(UPDATE_FILE)
-  const { loading, data } = useQuery(FILE, { variables: { slug } })
+  const { loading, data, refetch } = useQuery(FILE, { variables: { slug } })
 
-  useEffect(() => updateContent(), [slug])
-
-  const updateContent = () => {
-    if (loading || !data) return
-    setContentState({ slug, contents: data.file.contents })
-  }
+  useEffect(() => refetch, [slug])
 
   const saveContent = (saved) => {
-    setContentState({ slug: saved.slug, contents: saved.contents })
     updateFile({
       variables: {
         slug: saved.slug,
@@ -52,7 +45,7 @@ const useContent = ({ slug }) => {
     })
   }
 
-  return { loading, contentState, saveContent }
+  return { loading, contentState: data, saveContent }
 }
 
 export default useContent
