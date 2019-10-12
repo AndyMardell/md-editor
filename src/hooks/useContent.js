@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
+import { convertFromRaw, convertToRaw } from 'draft-js'
 
 const FILE = gql`
   query getFile($slug: String!) {
@@ -33,19 +34,34 @@ const UPDATE_FILE = gql`
 const useContent = ({ slug }) => {
   const [updateFile] = useMutation(UPDATE_FILE)
   const { loading, data, refetch } = useQuery(FILE, { variables: { slug } })
+  const [contentState, setContentState] = useState({})
 
-  useEffect(() => refetch, [slug, refetch])
+  useEffect(() => {
+    refetch()
 
-  const saveContent = (saved) => {
+    if (!data || !data.file.slug) return
+
+    setContentState({
+      slug: data.file.slug,
+      contents: data.file.contents && convertFromRaw(JSON.parse(data.file.contents))
+    })
+  }, [slug, refetch, data])
+
+  const saveContent = (newState) => {
+    const rawState = convertToRaw(newState.contents.getCurrentContent())
     updateFile({
       variables: {
-        slug: saved.slug,
-        contents: saved.contents
+        slug: newState.slug,
+        contents: JSON.stringify(rawState)
       }
     })
   }
 
-  return { loading, contentState: data, saveContent }
+  return {
+    loading,
+    contentState,
+    saveContent
+  }
 }
 
 export default useContent
