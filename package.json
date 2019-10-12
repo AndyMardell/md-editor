@@ -5,9 +5,11 @@
   "dependencies": {
     "@apollo/react-hooks": "^3.1.1",
     "apollo-boost": "^0.4.4",
+    "draft-js": "^0.11.1",
     "graphql": "^14.5.8",
     "lodash": "4.17.15",
     "normalize-css": "^2.3.1",
+    "polished": "^3.4.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.1.1",

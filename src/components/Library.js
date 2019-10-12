@@ -59,7 +59,7 @@ const Library = () => {
     e.preventDefault()
     updateDocument({
       name: e.target.innerText,
-      slug: slugify(e.target.innerText),
+      slug: slugify(e.target.innerText, { lower: true }),
       contents: ''
     })
     e.target.innerText = '+ New'

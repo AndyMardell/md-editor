@@ -35,7 +35,7 @@ const useDocument = () => {
   const { loading, data } = useQuery(FILES)
 
   useEffect(() => {
-    if (loading) return
+    if (loading || !data) return
     setDocuments(data.files)
   }, [loading, data])
 

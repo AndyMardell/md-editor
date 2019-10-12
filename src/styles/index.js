@@ -1,6 +1,9 @@
 import { createGlobalStyle } from 'styled-components'
+import { normalize } from 'polished'
 
 const Global = createGlobalStyle`
+  ${normalize()}
+
   html, body {
     background: #191A1A;
     color: #CCCBCB;
