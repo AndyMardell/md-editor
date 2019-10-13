@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import LibraryButton from './LibraryButton'
 import styled from 'styled-components'
 import { animated, useSpring, config } from 'react-spring'
@@ -10,7 +10,7 @@ const Nav = styled(animated.nav)`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   background: #151414;
   border-right: 1px solid #111;
   height: 100vh;
@@ -47,6 +47,7 @@ const Library = () => {
   const [active, setActive] = useState(false)
   const { loading, documents, updateDocument } = useDocuments()
   const [addingNewFile, setAddingNewFile] = useState(false)
+  const newRef = useRef(null)
 
   const animationProps = useSpring({
     config: config.default,
@@ -54,15 +55,25 @@ const Library = () => {
     to: { left: active ? '0' : '-350px' }
   })
 
+  const addNewFile = () => {
+    setAddingNewFile(true)
+    newRef.current.innerText = 'Untitled'
+    setTimeout(() => {
+      newRef.current.focus()
+      document.execCommand('selectAll', false, null)
+    }, 0)
+  }
+
   const handleCreate = (e) => {
+    // If enter key is hit
     if (e.which !== 13) return
     e.preventDefault()
     updateDocument({
-      name: e.target.innerText,
-      slug: slugify(e.target.innerText, { lower: true }),
+      name: newRef.current.innerText,
+      slug: slugify(newRef.current.innerText, { lower: true }),
       contents: ''
     })
-    e.target.innerText = '+ New'
+    newRef.current.innerText = '+ New'
     setAddingNewFile(false)
   }
 
@@ -74,7 +85,8 @@ const Library = () => {
       <Nav style={animationProps}>
         <button>
           <span
-            onClick={() => setAddingNewFile(true)}
+            ref={newRef}
+            onClick={addNewFile}
             contentEditable={addingNewFile}
             onKeyUp={handleCreate}
           >

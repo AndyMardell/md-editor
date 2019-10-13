@@ -5,7 +5,6 @@ import Library from './Library'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
 import Global from '../styles'
-import Typography from '../styles/typography'
 import 'draft-js/dist/Draft.css'
 import styled from 'styled-components'
 
@@ -26,6 +25,8 @@ const App = () => {
   const saveHandler = (e) => {
     const charCode = String.fromCharCode(e.which).toLowerCase()
     if ((e.ctrlKey || e.metaKey) && charCode === 's') {
+      // The app saves automatically, so just preventDefault
+      // TODO: Add a notification or something
       e.preventDefault()
     }
   }
@@ -39,7 +40,6 @@ const App = () => {
     <Router>
       <ApolloProvider client={client}>
         <Global />
-        <Typography />
         <Main>
           <Library />
           <Switch>

@@ -6,7 +6,7 @@ const Button = styled.button`
   position: absolute;
   top: 20px;
   left: 20px;
-  z-index: 2;
+  z-index: 3;
   background: transparent;
   border: none;
   display: flex;
