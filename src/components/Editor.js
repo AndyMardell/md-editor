@@ -22,8 +22,7 @@ const EditorComponent = ({ match }) => {
   useEffect(() => {
     if (loading || !contentState.contents) return
     const savedState = EditorState.createWithContent(contentState.contents)
-    const newEditorState = EditorState.set(savedState, { decorator })
-    setEditorState(newEditorState)
+    setEditorState(EditorState.set(savedState, { decorator }))
   }, [loading, contentState])
 
   const debouncedSave = debounce((newState) => {
